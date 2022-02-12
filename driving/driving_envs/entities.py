@@ -11,17 +11,17 @@ def get_entity_dynamics(friction, min_speed, max_speed, min_acc, max_acc, xnp=np
     def entity_dynamics(x, u, dt):
         # x: (x, y, xp, yp, theta, ang_vel, acceleration)
         # u: (steering angle, acceleration)
-        center = x[:2]
-        velocity = x[2:4]
-        speed = xnp.linalg.norm(velocity, ord=2)
-        heading = x[4]
-        angular_velocity = x[5]
-        old_acceleration = x[6]
-        steering_angle = u[0]
-        acceleration = xnp.clip(u[1], min_acc, max_acc)
+        center = x[:2]  #表示实体中心位置（x,y）
+        velocity = x[2:4] #表示速度（具有大小与方向）(xp,yp)
+        speed = xnp.linalg.norm(velocity, ord=2) #表示速率（无方向）
+        heading = x[4]  #暂时未知（驾驶前进方位角度）
+        angular_velocity = x[5] #表示角速度
+        old_acceleration = x[6] #之前的加速度
+        steering_angle = u[0] #驾驶前进方位角度
+        acceleration = xnp.clip(u[1], min_acc, max_acc) #加速度
 
-        new_angular_velocity = speed * steering_angle
-        new_acceleration = acceleration - friction * speed
+        new_angular_velocity = speed * steering_angle #新的角速度
+        new_acceleration = acceleration - friction * speed #新的加速度
 
         new_heading = heading + (angular_velocity + new_angular_velocity) * dt / 2.0
         new_speed = xnp.clip(
@@ -51,8 +51,8 @@ def get_easy_entity_dynamics(friction, min_speed, max_speed, min_acc, max_acc, x
         # x: (x, y, xp, yp, theta, ang_vel, acceleration)
         # u: (steering angle, acceleration)
         center = x[:2]
-        velocity = x[2:4]
-        speed = xnp.linalg.norm(velocity, ord=2)
+        velocity = x[2:4] #表示速度（具有大小与方向）
+        speed = xnp.linalg.norm(velocity, ord=2) #表示速率（无方向）
         heading = x[4]
         acceleration_x = xnp.clip(u[0], min_acc, max_acc)
         acceleration_y = xnp.clip(u[1], min_acc, max_acc)
@@ -200,6 +200,8 @@ class RectangleEntity(Entity):
 
     @property
     def edge_centers(self):
+        # center的四个方向的坐标： '+'
+        # 以二维数组形式返回
         edge_centers = np.zeros((4, 2), dtype=np.float32)
         x = self.center.x
         y = self.center.y
@@ -235,6 +237,7 @@ class RectangleEntity(Entity):
         return corners
 
     def buildGeometry(self):
+        #构建一个具体位置的图形 obj
         C = self.corners
         self.obj = Rectangle(*C[:-1])  # pylint: disable=no-value-for-parameter
 

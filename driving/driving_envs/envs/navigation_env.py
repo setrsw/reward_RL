@@ -34,6 +34,7 @@ class NavigationEnv(gym.Env):
         self.observation_space = spaces.Box(-np.inf, np.inf, shape=(4,))
 
     def step(self, action: np.ndarray):
+        #action：（设置加速度）（acc_x,acc_y）
         # update step count
         self.step_num += 1
         center_backup = self.cars["R"].center
@@ -45,9 +46,14 @@ class NavigationEnv(gym.Env):
         for building in self.buildings:
             if self.cars["R"].collidesWith(building):
                 self.collide_building = True
-                #self.cars["R"].center.x = center_backup.x
-                #self.cars["R"].center.y = center_backup.y
-                #done = True
+            '''
+                #----------->>><<<-------------#
+                #设置障碍物区分不同伦类
+                self.cars["R"].center.x = center_backup.x
+                self.cars["R"].center.y = center_backup.y
+                done = True
+                #------------>>><<<------------#
+            '''
         if self.cars["R"].center.x > 35 and self.cars["R"].center.y > 35:
             done = True
             self.finish = True
@@ -79,7 +85,7 @@ class NavigationEnv(gym.Env):
 
         # create buildings
         self.buildings = [
-            #Barrier1(Point(20, 20), 5, "gray80"),
+            # Barrier1(Point(20, 20), 5, "gray80"),
         ]
         '''
         self.buildings = [
